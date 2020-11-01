@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using API.Interfaces;
 using API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,20 +15,24 @@ namespace API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly DataContext _context;
+        private readonly ITokenService _tokenService;
 
-        public AccountController(DataContext context)
+        public AccountController(DataContext context, ITokenService tokenService)
         {
+            _tokenService = tokenService;
             _context = context;
 
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<AppUser>> Register(Register model){
+        public async Task<ActionResult<User>> Register(Register model)
+        {
 
-            if(await UserExists(model.UserName) && !string.IsNullOrEmpty(model.UserName)) return BadRequest("UserName is already taken.");
+            if (await UserExists(model.UserName) && !string.IsNullOrEmpty(model.UserName)) return BadRequest("UserName is already taken.");
 
             using var hmac = new HMACSHA512();
-            var user = new AppUser{
+            var user = new AppUser
+            {
                 UserName = model.UserName.ToLower(),
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(model.Password)),
                 PasswordSalt = hmac.Key
@@ -36,23 +41,34 @@ namespace API.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return user;
+            return new User
+            {
+                UserName = user.UserName,
+                Token = _tokenService.CreateToken(user)
+            };
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AppUser>> Login(Login model){
+        public async Task<ActionResult<User>> Login(Login model)
+        {
             AppUser user = await _context.Users.SingleOrDefaultAsync(user => user.UserName == model.UserName.ToLower());
-            if(user == null) return Unauthorized("Invalid user or password");
+            if (user == null) return Unauthorized("Invalid user or password");
             using var hmac = new HMACSHA512(user.PasswordSalt);
             var computerHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(model.Password));
-            for(int i = 0; i < computerHash.Length; i++){
-                if(computerHash[i] != user.PasswordHash[i])return Unauthorized("Invalid user or password");
+            for (int i = 0; i < computerHash.Length; i++)
+            {
+                if (computerHash[i] != user.PasswordHash[i]) return Unauthorized("Invalid user or password");
             }
 
-            return user;
+            return new User
+            {
+                UserName = user.UserName,
+                Token = _tokenService.CreateToken(user)
+            };
         }
 
-        private async Task<bool> UserExists(string username){
+        private async Task<bool> UserExists(string username)
+        {
             return await _context.Users.AnyAsync(user => user.UserName == username);
         }
     }
