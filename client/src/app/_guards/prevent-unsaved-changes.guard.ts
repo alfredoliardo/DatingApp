@@ -8,7 +8,7 @@ import { MemberEditComponent } from '../members/member-edit/member-edit.componen
 })
 export class PreventUnsavedChangesGuard implements CanDeactivate<unknown> {
   canDeactivate(component: MemberEditComponent): boolean {
-    if(component.profileForm.dirty){
+    if(component.editForm.dirty){
       return confirm('Sei sicuro di voler continuare? Tutte le modifiche andranno perse');
     }
     return true;

@@ -18,29 +18,29 @@
     </div>
     <div class="card-footer">
       <div class="btn-group">
-        <button [disabled]="!profileForm.dirty" type="submit" form="editForm" class="btn btn-success btn-block">
+        <button [disabled]="!editForm.dirty" type="submit" form="editForm" class="btn btn-success btn-block">
           <i class="fa fa-save"></i> Save Changes
         </button>
       </div>
     </div>
   </div>
   <div class="col-8">
-    <div *ngIf="profileForm.dirty" class="alert alert-warning" role="alert">
+    <div *ngIf="editForm.dirty" class="alert alert-warning" role="alert">
       NB: ogni modifica effettuata non salvata andrà persa.
     </div>
     <tabset class="member-tabset">
       <tab heading="About {{ member.knownAs }}" id="tab1">
-        <form [formGroup]="profileForm" id="editForm" (ngSubmit)="updateMember()">
+        <form #editForm="ngForm" id="editForm" (ngSubmit)="updateMember()">
           <h4>Description</h4>
-          <textarea formControlName="introduction" name="introduction" rows="6" class="form-control"></textarea>
+          <textarea [(ngModel)]="member.introduction" name="introduction" rows="6" class="form-control"></textarea>
           <h4>Looking for</h4>
-          <textarea formControlName="lookingFor" name="lookingFor" rows="6" class="form-control"></textarea>
+          <textarea [(ngModel)]="member.lookingFor" name="lookingFor" rows="6" class="form-control"></textarea>
           <h4>Location Details</h4>
           <div class="form-inline">
             <label for="city">City:</label>
-            <input formControlName="city" type="text" name="city" class="form-control" />
+            <input [(ngModel)]="member.city" type="text" name="city" class="form-control" />
             <label for="country">City:</label>
-            <input formControlName="country" type="text" name="country" class="form-control" />
+            <input [(ngModel)]="member.country" type="text" name="country" class="form-control" />
           </div>
         </form>
       </tab>
