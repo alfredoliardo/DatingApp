@@ -12,6 +12,8 @@ namespace API.Extensions
     public static class ApplicationServiceExtensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration){
+            services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
+            services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<ITokenService,TokenService>();
             services.AddScoped<IUserRepository,UserRepository>();
             services.AddDbContext<DataContext>(options =>
