@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -51,7 +52,7 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<User>> Login(Login model)
         {
-            AppUser user = await _context.Users.SingleOrDefaultAsync(user => user.UserName == model.UserName.ToLower());
+            AppUser user = await _context.Users.Include(u => u.Photos).SingleOrDefaultAsync(user => user.UserName == model.UserName.ToLower());
             if (user == null) return Unauthorized("Invalid user or password");
             using var hmac = new HMACSHA512(user.PasswordSalt);
             var computerHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(model.Password));
@@ -63,7 +64,8 @@ namespace API.Controllers
             return new User
             {
                 UserName = user.UserName,
-                Token = _tokenService.CreateToken(user)
+                Token = _tokenService.CreateToken(user),
+                PhotoUrl = user.Photos.Where(p => p.IsMain).SingleOrDefault()?.Url
             };
         }
 

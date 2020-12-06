@@ -3,8 +3,16 @@
         <img src="{{photo.url}}" class="img-thumbnail">
         
         <div class="btn-group btn-block" role="group" aria-label="commands">
-            <button type="button" class="btn btn-secondary">Main</button>
-            <button type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+            <button type="button" class="btn btn-secondary"
+            [disabled]="photo.isMain"
+            (click)="setMainPhoto(photo)"
+            [ngClass]='photo.isMain ? "btn-success active" : "btn-outline-success"'
+            >Main
+            </button>
+            <button
+            [disabled]="photo.isMain"
+            (click)="deletePhoto(photo)"
+            type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>
         </div>
     </div>
 </div>
