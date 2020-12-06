@@ -1,9 +1,9 @@
 <div class="row mb-3">
     <div *ngFor="let photo of member.photos" class="col-3 mb-2">
         <img src="{{photo.url}}" class="img-thumbnail">
-        
+
         <div class="btn-group btn-block" role="group" aria-label="commands">
-            <button type="button" class="btn btn-secondary"
+            <button type="button" class="btn"
             [disabled]="photo.isMain"
             (click)="setMainPhoto(photo)"
             [ngClass]='photo.isMain ? "btn-success active" : "btn-outline-success"'
@@ -17,7 +17,7 @@
     </div>
 </div>
 <div class="row  mb-3">
- 
+
     <div class="col-md-3">
 
         <h3>Select files</h3>
