@@ -1,15 +1,15 @@
 <div class="card mb-4">
   <div class="card-img-wrapper">
-    <img src="{{member.photoUrl}}" class="card-img-top" alt="{{member.knownAs}}">
+    <img src="{{member.photoUrl || './assets/user.png'}}" class="card-img-top" alt="{{member.knownAs}}">
     <div class="btn-group animate member-buttons" role="group" aria-label="Basic example">
       <button type="button" class="btn btn-primary btn-sm"routerLink='/members/{{member.userName}}' ><i class="fa fa-user"></i></button>
       <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-heart"></i></button>
       <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-envelope"></i></button>
     </div>
   </div>
-    
+
     <div class="card-body">
       <h5 class="card-title"><i class="fa fa-user"></i> {{member.userName}}</h5>
-      <p class="card-text">{{member.city}}</p>  
+      <p class="card-text">{{member.city}}</p>
     </div>
   </div>

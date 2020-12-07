@@ -1,9 +1,10 @@
 <div class="form-group">
+  <label for="{{label}}">{{label}}</label>
   <input
     type="text"
     [class.is-invalid]='ngControl.touched && ngControl.invalid'
     class="form-control"
-    [formControlName]="ngControl.control"
+    [formControl]="ngControl.control"
     placeholder="{{label}}"
     bsDatepicker
     [bsConfig]='bsConfig'

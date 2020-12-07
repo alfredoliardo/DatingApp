@@ -21,8 +21,8 @@ export class PhotoEditorComponent implements OnInit {
   baseUrl:string = environment.apiUrl;
   response:string;
   user:User;
- 
-  constructor(private accountService:AccountService, private memberService:MemberService) { 
+
+  constructor(private accountService:AccountService, private memberService:MemberService) {
     this.accountService.currentUser$.pipe(take(1)).subscribe(user => {
       this.user = user;
     });
@@ -49,8 +49,13 @@ export class PhotoEditorComponent implements OnInit {
 
     this.uploader.onSuccessItem = (item, response, status, headers) => {
       if(response){
-        const photo = JSON.parse(response);
+        const photo: Photo = JSON.parse(response);
         this.member.photos.push(photo);
+        if(photo.isMain){
+            this.user.photoUrl = photo.url;
+            this.member.photoUrl = photo.url;
+            this.accountService.setCurrentUser(this.user);
+        }
       }
     };
   }
@@ -71,14 +76,14 @@ export class PhotoEditorComponent implements OnInit {
        if(p.isMain) p.isMain = false;
        if(p.id === photo.id) p.isMain = true;
      });
-   }); 
+   });
   }
 
   public fileOverBase(e:any):void {
     this.hasBaseDropZoneOver = e;
   }
- 
+
   public fileOverAnother(e:any):void {
-    
+
   }
 }
