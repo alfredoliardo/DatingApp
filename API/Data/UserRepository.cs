@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Entities;
+using API.Helpers;
 using API.Interfaces;
 using API.Models;
 using AutoMapper;
@@ -63,11 +64,13 @@ namespace API.Data
             .SingleOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Member>> GetMembersAsync()
+        public async Task<PagedList<Member>> GetMembersAsync(UserParams userParams)
         {
-            return await _context.Users
-            .ProjectTo<Member>(_mapper.ConfigurationProvider)
-            .ToListAsync();
+            var query = _context.Users
+            .AsNoTracking()
+            .ProjectTo<Member>(_mapper.ConfigurationProvider);
+
+            return await PagedList<Member>.CreateAsync(query, userParams.PageNumber, userParams.PageSize);
         }
     }
 }
